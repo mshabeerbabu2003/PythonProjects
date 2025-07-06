@@ -1,0 +1,73 @@
+2025-07-06 15:57:20,690 - INFO - Starting student generation and insertion...
+2025-07-06 15:57:22,701 - INFO - Creating students table if it does not exist.
+2025-07-06 15:57:22,924 - INFO - Students table created successfully.
+2025-07-06 15:57:22,924 - INFO - Generating data for student ID: 1
+2025-07-06 15:57:23,104 - INFO - Generating data for student ID: 2
+2025-07-06 15:57:23,180 - CRITICAL - Unhandled exception: 1406 (22001): Data too long for column 'phone' at row 1
+2025-07-06 15:58:28,938 - INFO - Starting student generation and insertion...
+2025-07-06 15:58:30,630 - INFO - Creating students table if it does not exist.
+2025-07-06 15:58:30,692 - INFO - Students table created successfully.
+2025-07-06 15:58:30,692 - INFO - Generating data for student ID: 1
+2025-07-06 15:58:30,734 - CRITICAL - Unhandled exception: Provider.phone_number() takes 1 positional argument but 3 were given
+2025-07-06 16:03:13,778 - INFO - Starting student generation and insertion...
+2025-07-06 16:03:15,774 - INFO - Creating students table if it does not exist.
+2025-07-06 16:03:15,990 - INFO - Students table created successfully.
+2025-07-06 16:03:15,991 - INFO - Generating data for student ID: 1
+2025-07-06 16:03:16,032 - CRITICAL - Unhandled exception: Provider.phone_number() takes 1 positional argument but 3 were given
+2025-07-06 16:05:44,983 - INFO - Starting student generation and insertion...
+2025-07-06 16:05:47,091 - INFO - Creating students table if it does not exist.
+2025-07-06 16:05:47,318 - INFO - Students table created successfully.
+2025-07-06 16:05:47,318 - INFO - Generating data for student ID: 1
+2025-07-06 16:05:47,363 - CRITICAL - Unhandled exception: Provider.phone_number() takes 1 positional argument but 3 were given
+2025-07-06 16:07:06,479 - INFO - Starting student generation and insertion...
+2025-07-06 16:07:08,307 - INFO - Creating students table if it does not exist.
+2025-07-06 16:07:08,516 - INFO - Students table created successfully.
+2025-07-06 16:07:08,516 - INFO - Generating data for student ID: 1
+2025-07-06 16:07:08,561 - CRITICAL - Unhandled exception: Provider.phone_number() takes 1 positional argument but 3 were given
+2025-07-06 16:07:43,002 - INFO - Starting student generation and insertion...
+2025-07-06 16:07:44,790 - INFO - Creating students table if it does not exist.
+2025-07-06 16:07:44,870 - INFO - Students table created successfully.
+2025-07-06 16:07:44,870 - INFO - Generating data for student ID: 1
+2025-07-06 16:07:45,058 - INFO - Generating data for student ID: 2
+2025-07-06 16:07:45,219 - INFO - Generating data for student ID: 3
+2025-07-06 16:07:45,370 - INFO - Generating data for student ID: 4
+2025-07-06 16:07:45,526 - INFO - Generating data for student ID: 5
+2025-07-06 16:07:45,660 - INFO - Generating data for student ID: 6
+2025-07-06 16:07:45,799 - INFO - Generating data for student ID: 7
+2025-07-06 16:07:45,869 - CRITICAL - Unhandled exception: 1406 (22001): Data too long for column 'phone' at row 1
+2025-07-06 16:09:14,028 - INFO - Starting student generation and insertion...
+2025-07-06 16:09:15,733 - INFO - Creating students table if it does not exist.
+2025-07-06 16:09:15,800 - INFO - Students table created successfully.
+2025-07-06 16:09:15,800 - INFO - Generating data for student ID: 1
+2025-07-06 16:09:15,845 - INFO - Generated phone number: 001-446-276-4631x45995
+2025-07-06 16:09:15,917 - CRITICAL - Unhandled exception: 1406 (22001): Data too long for column 'phone' at row 1
+2025-07-06 16:10:53,775 - INFO - Starting student generation and insertion...
+2025-07-06 16:10:55,433 - INFO - Creating students table if it does not exist.
+2025-07-06 16:10:55,501 - INFO - Students table created successfully.
+2025-07-06 16:10:55,502 - INFO - Generating data for student ID: 1
+2025-07-06 16:10:55,546 - INFO - Generated phone number: 7222574123
+2025-07-06 16:10:55,612 - CRITICAL - Unhandled exception: 1062 (23000): Duplicate entry '?' for key 'students.PRIMARY'
+2025-07-06 16:11:20,997 - INFO - Starting student generation and insertion...
+2025-07-06 16:11:22,684 - INFO - Creating students table if it does not exist.
+2025-07-06 16:11:22,925 - INFO - Students table created successfully.
+2025-07-06 16:11:22,925 - INFO - Generating data for student ID: 1
+2025-07-06 16:11:22,970 - INFO - Generated phone number: 1989974565
+2025-07-06 16:11:23,116 - INFO - Generating data for student ID: 2
+2025-07-06 16:11:23,119 - INFO - Generated phone number: 9864372717
+2025-07-06 16:11:23,277 - INFO - Generating data for student ID: 3
+2025-07-06 16:11:23,279 - INFO - Generated phone number: 5756673549
+2025-07-06 16:11:23,411 - INFO - Generating data for student ID: 4
+2025-07-06 16:11:23,414 - INFO - Generated phone number: 3818779485
+2025-07-06 16:11:23,555 - INFO - Generating data for student ID: 5
+2025-07-06 16:11:23,558 - INFO - Generated phone number: 6385230450
+2025-07-06 16:11:23,707 - INFO - Generating data for student ID: 6
+2025-07-06 16:11:23,710 - INFO - Generated phone number: 3195340129
+2025-07-06 16:11:23,855 - INFO - Generating data for student ID: 7
+2025-07-06 16:11:23,858 - INFO - Generated phone number: 2979770299
+2025-07-06 16:11:24,001 - INFO - Generating data for student ID: 8
+2025-07-06 16:11:24,004 - INFO - Generated phone number: 2342733660
+2025-07-06 16:11:24,137 - INFO - Generating data for student ID: 9
+2025-07-06 16:11:24,138 - INFO - Generated phone number: 3285132176
+2025-07-06 16:11:24,287 - INFO - Generating data for student ID: 10
+2025-07-06 16:11:24,290 - INFO - Generated phone number: 4244391586
+2025-07-06 16:11:24,455 - INFO - Student generation and insertion completed.
