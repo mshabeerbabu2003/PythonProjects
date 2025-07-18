@@ -4,7 +4,7 @@ import pandas as pd # type: ignore
 from faker import Faker as fk # type: ignore
 import logging
 import streamlit as st # type: ignore
-import sqlalchemy # type: ignore
+
 
 # Configure Logging
 logging.basicConfig(
