@@ -1,6 +1,7 @@
-import streamlit as st
-import pandas as pd
-from PADataGenerator import Database, Filters
+# pyright: ignore[reportMissingImports]
+import streamlit as st # type: ignore
+import pandas as pd # type: ignore
+from PADataGenerator import Database, Filters, Students, Placements, Programming, Softskills
 
 st.write("""# Placement Assistance App""")
 st.write("## Welcome to the Placement Assistance App")
@@ -14,7 +15,6 @@ class Templates:
     def get_batch_names(self):
         filters = Filters(Database())
         #st.write(f"### Batch: {self.batch_name}")
-        st.write("This is the batch information.")
         st.sidebar.write("## Select Filters")
         st.sidebar.write("### Batch Names")
         my_tuple = filters.get_batch_names()
@@ -44,9 +44,9 @@ class Templates:
     #     st.write("### Students Data")
     #     st.dataframe(students_df)
     
-    def show_filtered_students(self, batch, selected_options):
+    def show_filtered_students(self, batch, selected_language, programming=None, softskills=None, placements=None):
         filters = Filters(Database())
-        students_batch = filters.get_students_by_filter(batch, selected_options)
+        students_batch = filters.get_students_by_filter(batch, selected_language, programming, softskills, placements)
         students_df = pd.DataFrame(students_batch, columns=["student_id", "name", "age",
                                                             "gender", "email", "phone", "enrollment_year",
                                                             "course_batch", "city", "graduation_year"])
@@ -57,75 +57,124 @@ class Templates:
 
 
 filterz = Templates()
+DB = Filters(Database())
+
+students = Students()
+programming = Programming()
+softskills = Softskills()
+placements = Placements()
 batches = filterz.get_batch_names()
-selected_batches_arr = []
-selected_batches = tuple()  # Initialize as an empty tuple
-# Iterate through the tuple and create a checkbox for each item
-for item in batches:
-    # st.checkbox returns True if checked, False otherwise
-    if st.sidebar.checkbox(item):
-        selected_batches_arr.append(item)
-        selected_batches = tuple(selected_batches_arr)  # Convert list to tuple
+if batches:
+    st.sidebar.write("### Batches")
+    # Create a multiselect widget for batch selection
+    selected_batches = st.sidebar.multiselect("Select Batches", batches)
+    # Convert the selected batches to a tuple
+    selected_batches = ", ".join(f"'{item}' " for item in selected_batches)  # Convert list to tuple
+print(f"Selected batches: {selected_batches}")
 
-    
-if not selected_batches:
-        st.write("No batch selected.")
-        # filterz.Show_programming_languages(selected_batches)
+gender = st.sidebar.selectbox("Select", ("Select", "Male", "Female", "Other"))
+match gender:
+    case "Male":
+        gender = "M"
+    case "Female":
+        gender = "F"
+    case "Other":
+        gender = "O"
+    case _:
+        gender = None
 
-    
-
-#st.subheader("Selected Options:")
-# if selected_options:
-#     #placeholders = ', '.join(['%s'] * len(selected_options))
-#     filterz.Show_batchwise_students(tuple(selected_options))  # Show students for the all selected batch
-        
-# else:
-#     st.write("No options selected.")
-selected_languages = []
+selected_languages = None
 programminglang = filterz.get_programming_languages()
 if programminglang:
     st.sidebar.write("### Programming Languages")
-    selected_languages = st.sidebar.multiselect("Select Programming Languages", programminglang)
+    lang = st.sidebar.multiselect("Select Programming Languages", programminglang)
+    selected_languages = ", ".join(f"'{item}' " for item in lang) # Convert list to tuple
+print(f"Selected programming languages: {selected_languages}")  
+
+programming.problems_solved  = st.sidebar.slider("Number of Problems Solved", 0, 100)
+if programming.problems_solved == 0:
+    programming.problems_solved = None 
+print(f"Problems Solved: {programming.problems_solved}")
 
 
-problems_solved  = st.sidebar.slider("Number of Problems Solved", 0, 100)
+programming.assessments_completed = st.sidebar.slider("Assessment Completed", 0, 12)
+if programming.assessments_completed == 0:  
+    programming.assessments_completed = None
+print(f"Assessment Completed: {programming.assessments_completed}")
 
-assessment_Completed = st.sidebar.slider("Assessment Completed", 0, 12)
+if not (programminglang 
+        or (programming.problems_solved is not None and programming.problems_solved > 0) 
+        or (programming.assessments_completed is not None and programming.assessments_completed > 0)):
+    programming = None
+    print(f"Programming object: {programming}")
 
-communication_Skills = st.sidebar.slider("Communication Skills", 0, 100)
+softskills.communication_skills = st.sidebar.slider("Communication Skills", 0, 100)
+if softskills.communication_skills == 0:
+    softskills.communication_skills = None
+print(f"Communication Skills: {softskills.communication_skills}")
 
-teamwork_Skills = st.sidebar.slider("Teamwork Skills", 0, 100)
+softskills.teamwork_skills = st.sidebar.slider("Teamwork Skills", 0, 100)
+if softskills.teamwork_skills == 0:
+    softskills.teamwork_skills = None
+print(f"Teamwork Skills: {softskills.teamwork_skills}")
 
-Presentation_Skills = st.sidebar.slider("Presentation Skills", 0, 100)
+softskills.presentation_skills = st.sidebar.slider("Presentation Skills", 0, 100)
+if softskills.presentation_skills == 0: 
+    softskills.presentation_skills = None
+print(f"Presentation Skills: {softskills.presentation_skills}")
 
-leadership_Skills = st.sidebar.slider("Leadership Skills", 0, 100)
+softskills.leadership_skills = st.sidebar.slider("Leadership Skills", 0, 100)
+if softskills.leadership_skills == 0 :
+    softskills.leadership_skills = None
+print(f"Leadership Skills: {softskills.leadership_skills}")
 
-critical_Thinking_Skills = st.sidebar.slider("Critical Thinking Skills", 0, 100)
+softskills.critical_thinking_skills = st.sidebar.slider("Critical Thinking Skills", 0, 100)
+if softskills.critical_thinking_skills == 0:
+    softskills.critical_thinking_skills = None
+print(f"Critical Thinking Skills: {softskills.critical_thinking_skills}")
 
-interpersonal_Skills = st.sidebar.slider("Interpersonal Skills", 0, 100)
+softskills.interpersonal_skills = st.sidebar.slider("Interpersonal Skills", 0, 100)
+if softskills.interpersonal_skills == 0:
+    softskills.interpersonal_skills = None
+print(f"Interpersonal Skills: {softskills.interpersonal_skills}")
 
-mock_Interview = st.sidebar.slider("Mock Interview", 0, 10)
+if not ((softskills.communication_skills  is not None and softskills.communication_skills > 0)
+        or (softskills.teamwork_skills is not None and  softskills.teamwork_skills > 0) 
+        or (softskills.presentation_skills is not None and softskills.presentation_skills > 0)
+        or (softskills.leadership_skills is not None and softskills.leadership_skills > 0)
+        or (softskills.critical_thinking_skills is not None and  softskills.critical_thinking_skills > 0) 
+        or (softskills.interpersonal_skills is not None and  softskills.interpersonal_skills > 0)):
+    softskills = None
+    print(f"Softskills object: {softskills}")
 
-internships_completed = st.sidebar.slider("Internships Completed", 0, 5)
 
-placement_selected = st.sidebar.selectbox("Placement Selected", ("Not Ready", "Ready", "Placed"))
+placements.mock_interview_score = st.sidebar.slider("Mock Interview", 0, 10)
+if placements.mock_interview_score == 0:
+    placements.mock_interview_score = None
+print(f"Mock Interview Score: {placements.mock_interview_score}")
+
+placements.internships_completed = st.sidebar.slider("Internships Completed", 0, 5)
+if placements.internships_completed > 0:
+    placements.internships_completed = None
+print(f"Internships Completed: {placements.internships_completed}")
+
+placements.placement_status = st.sidebar.selectbox("Placement Selected", ("Select", "Not Ready", "Ready", "Placed"))
+if placements.placement_status != "Select":
+    placements.placement_status = placements.placement_status
+    print(f"Placement Status: {placements.placement_status}")
+else:
+    placements.placement_status = None
+    print("Placement Status: Not Selected")
 
 
 
 
-if selected_batches and selected_languages:
-    st.write("### Selected Batches and Programming Languages")
-    st.write(f"Selected Batches: {selected_batches}")
-    st.write(f"Selected Programming Languages: {selected_languages}")
-    
+if selected_batches or selected_languages or programming or softskills or placements:
+    st.write("### Filtered Students") 
     # Show filtered students based on selected batches and programming languages
-    filterz.show_filtered_students(selected_batches, selected_languages)
+    students_dataset = DB.get_students_by_filter(selected_batches, gender, selected_languages, programming, softskills, placements)
 
-
-
-# batchNamesarr = [name for name in batches]  # Extracting
-# batch = st.sidebar.selectbox("Select Course", batchNamesarr, index=0)
-# print(f"Selected batch: {batch}")
-# filterz.Show_batchwise_students(batch)
-
-# st.sidebar.slidebar("")
+    students_df = pd.DataFrame(students_dataset, columns=["student_id", "name", "age",
+                                                        "gender", "email", "phone", "enrollment_year",
+                                                        "course_batch", "city", "graduation_year"])
+    st.dataframe(students_df)

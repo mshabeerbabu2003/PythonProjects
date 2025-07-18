@@ -1,8 +1,9 @@
-import mysql.connector as mysql
-import pandas as pd
-from faker import Faker as fk
+# pyright: ignore[reportMissingImports]
+import mysql.connector as mysql # type: ignore
+import pandas as pd # type: ignore
+from faker import Faker as fk # type: ignore
 import logging
-
+import streamlit as st # type: ignore
 
 # Configure Logging
 logging.basicConfig(
@@ -18,11 +19,18 @@ logging.basicConfig(
 class Database:
     def __init__(self):
         connstring = {}
-        self.conn = mysql.connect(host="gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-            user="51GXEaMuDfyhKHU.root",
-            password='q2Nq0XMq5CK7eHAb',
-            database='MDT54Shabeer',
-            port=4000)
+        self.conn = mysql.connect(
+    host=st.secrets["mysql"]["host"],
+    user=st.secrets["mysql"]["username"],
+    password=st.secrets["mysql"]["password"],
+    database=st.secrets["mysql"]["database"],
+    port=st.secrets["mysql"]["port"]
+)
+        # self.conn = mysql.connect(host="gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
+        #     user="51GXEaMuDfyhKHU.root",
+        #     password='q2Nq0XMq5CK7eHAb',
+        #     database='MDT54Shabeer',
+        #     port=4000)
         self.cursor = self.conn.cursor()
 
     def close(self):
@@ -43,25 +51,96 @@ class Filters:
         db.close()
         return my_tuple
     
-    def get_students_by_filter(self, batch = None, programming_language=None):
+    def get_students_by_filter(self, batch = None, gender = None, languages=None, programming=None, softskills=None, placements=None):
         #db = Database()
-        sqlQuery = "SELECT * FROM students stds"
-        filterstring = ''
-        if programming_language is not None:
-            filterstring = f" join programming pgm ON stds.student_id = pgm.student_id and language in ({programming_language}) "
+        sqlQuery = "SELECT stds.student_id, stds.name, stds.age, stds.Gender, " 
+        sqlQuery += " stds.email, stds.phone, stds.enrollment_year, stds.course_batch, "
+        sqlQuery += " stds.city, stds.graduation_year  FROM students stds "
+        JoinClause = ""
+        WhereClause = ""
 
-        if batch is not None:
-            if( filterstring == ''):
-                filterstring += " WHERE "
-                filterstring += f"course_batch IN ({batch})"
-
-        print(f"Batch: {batch}, Programming Language: {programming_language} filterstring: {filterstring}")
-        if filterstring:
-            filterstring = " WHERE " + filterstring if not filterstring.startswith(" WHERE ") else " AND " + filterstring
-
-        print(f"Executing SQL Query: {sqlQuery + filterstring}")
         
-        self.db.cursor.execute(sqlQuery + filterstring)
+        
+        if batch is not None and len(batch) > 0:
+            WhereClause += f" stds.course_batch IN ({batch}) "
+        
+        if gender is not None:
+            if(WhereClause != ""):
+                WhereClause += " AND "
+
+            WhereClause += f" stds.Gender = '{gender}'"
+
+        if programming is not None:
+            JoinClause += f" join programming pgm ON stds.student_id = pgm.student_id  "
+            if( languages is not None and len(languages) > 0):
+                if(WhereClause != ""):
+                   WhereClause += " AND "
+                WhereClause += f" pgm.language in ({languages}) "
+            if( programming.problems_solved is not None and programming.problems_solved > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" pgm.problems_solved >= {programming.problems_solved} "
+            if( programming.assessments_completed is not None and programming.assessments_completed > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" pgm.assessments_completed >= {programming.assessments_completed} "
+
+
+        if softskills is not None:
+            JoinClause += f" join softskills ss ON stds.student_id = ss.student_id "
+            if( softskills.communication_skills is not None and softskills.communication_skills > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" ss.communication_skills >= {softskills.communication_skills} "
+            if( softskills.teamwork_skills is not None and softskills.teamwork_skills > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" ss.teamwork_skills >= {softskills.teamwork_skills} "
+            if( softskills.presentation_skills is not None and softskills.presentation_skills > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" ss.presentation_skills >= {softskills.presentation_skills} "
+            if( softskills.leadership_skills is not None and softskills.leadership_skills > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" ss.leadership_skills >= {softskills.leadership_skills} "
+            if( softskills.critical_thinking_skills is not None and softskills.critical_thinking_skills > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" ss.critical_thinking_skills >= {softskills.critical_thinking_skills} "
+            if( softskills.interpersonal_skills is not None and softskills.interpersonal_skills > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" ss.interpersonal_skills >= {softskills.interpersonal_skills} "
+
+        if placements is not None:
+            JoinClause += f" join placements pl ON stds.student_id = pl.student_id "
+            if( placements.mock_interview_score is not None and placements.mock_interview_score > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" pl.mock_interview_score >= {placements.mock_interview_score} "
+            if( placements.internships_completed is not None and placements.internships_completed > 0):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" pl.internships_completed >= {placements.internships_completed} "
+            if( placements.placement_status is not None and placements.placement_status != "Select"):
+                if(WhereClause != ""):
+                    WhereClause += " AND "
+                WhereClause += f" pl.placement_status = '{placements.placement_status}' "
+        Where = ""
+        if( not WhereClause.isspace() and len(WhereClause) > 0):
+            WhereClause =  " WHERE " + WhereClause
+           
+        sqlQuery = sqlQuery + JoinClause + WhereClause
+        print(f"SQL Query: {sqlQuery}")
+
+        # print(f"Batch: {batch}, Programming Language: {languages} filterstring: {WhereClause}")
+        # if WhereClause:
+        #     WhereClause = " WHERE " + WhereClause if not WhereClause.startswith(" WHERE ") else " AND " + WhereClause
+
+        
+        
+        self.db.cursor.execute(sqlQuery)
         students_batch = self.db.cursor.fetchall()
         return students_batch
     def get_programming_languages(self):
@@ -74,7 +153,7 @@ class Filters:
         return my_tuple
 
 class Students:
-    def __init__(self, student_id=0, name="", age=0, gender="", email="", phone="", enrollment_year=0, course_batch="", city="", graduation_year=0):
+    def __init__(self, student_id=None, name=None, age=None, gender=None, email=None, phone=None, enrollment_year=None, course_batch=None, city=None, graduation_year=None):
         self.student_id = student_id
         self.name = name
         self.age = age
@@ -95,13 +174,13 @@ class Students:
         student.student_id = student_id
         student.name = fake.name()
         student.age = fake.random_int(min=18, max=25)
-        student.gender = fake.random_element(elements=("M", "F"))
+        student.gender = fake.random_element(elements=("M", "F", "O"))
         student.email = fake.email(student.name)
         phone = fake.random_int(min=1111111111, max=9999999999)
         logging.info(f"Generated phone number: {phone}")
         # Ensure phone number is a string and formatted correctly
         student.phone = phone
-        student.enrollment_year = fake.random_int(min=2015, max=2025)   
+        student.enrollment_year = fake.random_int(min=2015, max=2025)  
         student.course_batch = f"MDT_{fake.random_element(elements=('A', 'B', 'C', 'D'))}"
         student.city = fake.city()
         student.graduation_year = fake.random_int(student.enrollment_year + 3, student.enrollment_year + 4)
@@ -139,7 +218,7 @@ class Students:
        
 
 class Programming:
-    def __init__(self, programming_id=0, student_id=0, language="", problems_solved="", assessments_completed=""):
+    def __init__(self, programming_id=None, student_id=None, language=None, problems_solved=None, assessments_completed=None):
         self.programming_id = programming_id
         self.student_id = student_id
         self.language = language
@@ -184,7 +263,7 @@ class Programming:
         db.close()
 
 class Softskills:
-    def __init__(self, softskills_id=0, student_id=0, communication_skills=0, teamwork_skills=0, presentation_skills=0, leadership_skills=0, critical_thinking_skills= 0, interpersonal_skills = 0):
+    def __init__(self, softskills_id=None, student_id=None, communication_skills=None, teamwork_skills=None, presentation_skills=None, leadership_skills=None, critical_thinking_skills=None, interpersonal_skills =None):
         self.softskill_id = softskills_id
         self.student_id =student_id
         self.communication_skills  = communication_skills
@@ -241,7 +320,7 @@ class Softskills:
         db.close()
 
 class Placements:
-    def __init__(self, placement_id=0, student_id=0, mock_interview_score=0, internships_completed=0,   placement_status="", company_name="", placement_package="", interview_rounds_cleared=0, placement_date=""):
+    def __init__(self, placement_id=None, student_id=None, mock_interview_score=None, internships_completed=None,   placement_status=None, company_name=None, placement_package=None, interview_rounds_cleared=None, placement_date=None):
         self.placement_id  = placement_id
         self.student_id = student_id
         self.mock_interview_score = mock_interview_score
